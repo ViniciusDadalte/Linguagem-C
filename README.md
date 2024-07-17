@@ -40,7 +40,7 @@ A estrutura do repositório está organizada da seguinte maneira:
 Para explorar os exercícios e projetos, basta clonar o repositório e navegar pelas pastas:
 
 ```sh
-git clone https://github.com/seu-usuario/Linguagem-C.git
+git clone https://github.com/ViniciusDadalte/Linguagem-C.git
 cd Linguagem-C
 ```
 
