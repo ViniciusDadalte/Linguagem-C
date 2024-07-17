@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// o nome da pasta é esse porque escrevi esse codigo com minha namorada kkkk
+
 typedef struct no
 {
     int dado;
