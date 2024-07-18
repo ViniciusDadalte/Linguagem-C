@@ -93,7 +93,6 @@ void enfileirar(int num, Fila *fila)
     {
         fila->fim->proximo = novo;
         fila->fim = novo;
-        novo->valor = num;
     }
     fila->tam++;
 }
