@@ -64,6 +64,8 @@ int main(void)
                 printf("elemento a ser remvido: %i\n", removido->valor);
                 free(removido);
             }
+            else
+                printf("elemento nao existe\n");
             break;
         case 6:
             system("cls");
