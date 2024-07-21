@@ -34,12 +34,6 @@ typedef struct
     Contrato cont;
 } Pessoa;
 
-typedef struct no
-{
-    Pessoa p;
-    struct no *proximo;
-} No;
-
 void imprimirData(Data d);
 void imprimirEndereco(Endereco end);
 void imprimirContrato(Contrato cont);
