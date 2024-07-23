@@ -110,7 +110,7 @@ int alutra(NoArv *raiz)
 {
     if (raiz == NULL)
     {
-        return 0;
+        return -1;
     }
     else
     {
