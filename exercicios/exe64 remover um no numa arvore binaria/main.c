@@ -183,6 +183,24 @@ NoArv* remover(int num, NoArv *raiz)
                 free(raiz);
                 return NULL;
             }
+            else
+            {
+                if (raiz->esquerda != NULL && raiz->direita != NULL)
+                {
+
+                }
+                else
+                {
+                    NoArv *aux;
+                    if (raiz->esquerda != NULL)
+                        aux = raiz->esquerda;
+                    else
+                        aux = raiz->direita;
+                    free(raiz);
+                    printf("elemento com 1 filho removido: %i", num);
+                    return aux;
+                }
+            }
         }
         else
         {
