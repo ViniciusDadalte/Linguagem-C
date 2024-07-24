@@ -187,7 +187,14 @@ NoArv* remover(int num, NoArv *raiz)
             {
                 if (raiz->esquerda != NULL && raiz->direita != NULL)
                 {
-
+                    NoArv *aux = raiz->esquerda;
+                    while (aux->direita)
+                        aux = aux->direita;
+                    raiz->valor = aux->valor;
+                    aux->valor = num;
+                    printf("elemento trocado: %i\n", num);
+                    raiz->esquerda = remover(num, raiz->esquerda);
+                    return raiz;
                 }
                 else
                 {
