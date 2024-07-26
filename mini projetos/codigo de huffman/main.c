@@ -46,7 +46,7 @@ void imprimeTabFrequencia(unsigned int tab[])
     for (int i = 0; i < TAM; i++)
     {
         if (tab[i] > 0)
-            printf("\t%i = %i = %c\n", i , tab[i], i);
+            printf("\t%i = %u = %c\n", i , tab[i], i);
     }
 }
 
