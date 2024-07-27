@@ -36,18 +36,22 @@ int alturaArvore(No *raiz);
 char** alocaDicionario(int colunas);
 void gerarDicionario(char **dicionario, No *raiz, char *caminho, int colunas);
 void imprimeDicionario(char **dicionario);
+// Codificar
+int calculaTamanhoString(char **dicionario, unsigned char *texto);
+char* codificar(char **dicionario, unsigned char *texto);
 
 int main(void)
 {
     setlocale(LC_ALL, "Portuguese");
     system("cls");
 
-    unsigned char texto[] = "Vamos aprender a programa";
+    unsigned char texto[] = "Vamos aprender programação";
     unsigned int tabelaFrequencia[TAM];
     Lista l;
     No *arvore;
     int colunas;
     char **dicionario;
+    char *codificado;
 
     // Tabela de frequencia
     iniciaTabelaComZero(tabelaFrequencia);
@@ -69,6 +73,10 @@ int main(void)
     dicionario = alocaDicionario(colunas);
     gerarDicionario(dicionario, arvore, "", colunas);
     imprimeDicionario(dicionario);
+
+    // Codificar
+    codificado = codificar(dicionario, texto);
+    printf("\n\tTexto codificado: %s\n\n", codificado);
 
     return 0;
 }
@@ -276,3 +284,26 @@ void imprimeDicionario(char **dicionario)
     }
 }
 
+int calculaTamanhoString(char **dicionario, unsigned char *texto)
+{
+    int i = 0, tam = 0;
+    while (texto[i] != '\0')
+    {
+        tam = tam + strlen(dicionario[texto[i]]);
+        i++;
+    }
+    return tam + 1;
+}
+
+char* codificar(char **dicionario, unsigned char *texto)
+{
+    int i = 0, tam = calculaTamanhoString(dicionario, texto);
+    char *codigo = calloc(tam, sizeof(char));
+
+    while (texto[i] != '\0')
+    {
+        strcat(codigo, dicionario[texto[i]]);
+        i++;
+    }
+    return codigo;
+}
