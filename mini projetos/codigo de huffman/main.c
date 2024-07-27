@@ -26,15 +26,20 @@ void criarLista(Lista *l);
 void inserirOrdenado(Lista *l, No *n);
 void preencherLista(unsigned int tab[], Lista *l);
 void imprimeLista(Lista *l);
+// Montar arvore de huffman
+No* removeNoInico(Lista *l);
+No* montarArvore(Lista *l);
+void imprimeArvore(No *raiz, int tam);
 
 int main(void)
 {
     setlocale(LC_ALL, "Portuguese");
     system("cls");
 
-    unsigned char texto[] = "Vamos aprender programação";
+    unsigned char texto[] = "Vamos aprender a programa";
     unsigned int tabelaFrequencia[TAM];
     Lista l;
+    No *arvore;
     
     // Tabela de frequencia
     iniciaTabelaComZero(tabelaFrequencia);
@@ -45,6 +50,11 @@ int main(void)
     criarLista(&l);
     preencherLista(tabelaFrequencia, &l);
     imprimeLista(&l);
+
+    // Montar arvore de huffman
+    arvore = montarArvore(&l);
+    printf("\n\tArvore de huffman\n");
+    imprimeArvore(arvore, 0);
 
     return 0;
 }
@@ -139,6 +149,58 @@ void imprimeLista(Lista *l)
     {
         printf("\tCaracter: %c Frequencia: %i\n", aux->letra, aux->frequencia);
         aux = aux->proximo;
+    }
+}
+
+No* removeNoInico(Lista *l)
+{
+    No *aux = NULL;
+
+    if (l->inicio != NULL)
+    {
+        aux = l->inicio;
+        l->inicio = aux->proximo;
+        aux->proximo = NULL;
+        l->tam--;
+    }
+
+    return aux;
+}
+
+No* montarArvore(Lista *l)
+{
+    No *primeiro, *segundo, *novo;
+    while (l->tam > 1)
+    {
+        primeiro = removeNoInico(l);
+        segundo = removeNoInico(l);
+        
+        novo = malloc(sizeof(No));
+        if (novo == NULL)
+        {
+            printf("erro ao alocar memoria em montarArvore\n");
+            break;
+        }
+
+        novo->letra = '+';
+        novo->frequencia = primeiro->frequencia + segundo->frequencia;
+        novo->esquerda = primeiro;
+        novo->direita = segundo;
+        novo->proximo = NULL;
+
+        inserirOrdenado(l, novo);
+    }
+    return l->inicio;   
+}
+
+void imprimeArvore(No *raiz, int tam)
+{
+    if (raiz->esquerda == NULL && raiz->direita == NULL)
+        printf("\tFolha: %c\tAltura: %i\n", raiz->letra, tam);
+    else
+    {
+        imprimeArvore(raiz->esquerda, tam + 1);
+        imprimeArvore(raiz->direita, tam + 1);
     }
 }
 
