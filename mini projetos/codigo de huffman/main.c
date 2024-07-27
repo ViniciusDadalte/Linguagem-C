@@ -39,19 +39,21 @@ void imprimeDicionario(char **dicionario);
 // Codificar
 int calculaTamanhoString(char **dicionario, unsigned char *texto);
 char* codificar(char **dicionario, unsigned char *texto);
+// Decodificar
+char* decodificar(unsigned char *texto, No *raiz);
 
 int main(void)
 {
     setlocale(LC_ALL, "Portuguese");
     system("cls");
 
-    unsigned char texto[] = "Vamos aprender programação";
+    unsigned char texto[] = "Vamos aprender a programa";
     unsigned int tabelaFrequencia[TAM];
     Lista l;
     No *arvore;
     int colunas;
     char **dicionario;
-    char *codificado;
+    char *codificado, *decodificado;
 
     // Tabela de frequencia
     iniciaTabelaComZero(tabelaFrequencia);
@@ -76,7 +78,11 @@ int main(void)
 
     // Codificar
     codificado = codificar(dicionario, texto);
-    printf("\n\tTexto codificado: %s\n\n", codificado);
+    printf("\n\tTexto codificado: %s\n", codificado);
+
+    // Decodificar
+    decodificado = decodificar(codificado, arvore);
+    printf("\n\tTexto codificado: %s\n\n", decodificado);
 
     return 0;
 }
@@ -307,3 +313,31 @@ char* codificar(char **dicionario, unsigned char *texto)
     }
     return codigo;
 }
+
+char* decodificar(unsigned char *texto, No *raiz)
+{
+    No *aux = raiz;
+    char *decodificado = calloc(strlen(texto), sizeof(char));
+    char temp[2];
+    int i = 0;
+
+    while (texto[i] != '\0')
+    {
+        if (texto[i] == '0')
+            aux = aux->esquerda;
+        else
+            aux = aux->direita;
+
+        if (aux->esquerda == NULL && aux->direita == NULL)
+        {
+            temp[0] = aux->letra;
+            temp[1] = '\0';
+            strcat(decodificado, temp);
+            aux = raiz;
+        }
+
+        i++;
+    }
+    return decodificado;
+}
+
