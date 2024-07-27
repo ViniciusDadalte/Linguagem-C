@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 
 #define TAM 256
@@ -30,6 +31,11 @@ void imprimeLista(Lista *l);
 No* removeNoInico(Lista *l);
 No* montarArvore(Lista *l);
 void imprimeArvore(No *raiz, int tam);
+// Montar o dicionario
+int alturaArvore(No *raiz);
+char** alocaDicionario(int colunas);
+void gerarDicionario(char **dicionario, No *raiz, char *caminho, int colunas);
+void imprimeDicionario(char **dicionario);
 
 int main(void)
 {
@@ -40,7 +46,9 @@ int main(void)
     unsigned int tabelaFrequencia[TAM];
     Lista l;
     No *arvore;
-    
+    int colunas;
+    char **dicionario;
+
     // Tabela de frequencia
     iniciaTabelaComZero(tabelaFrequencia);
     preencheTabFrequencia(texto, tabelaFrequencia);
@@ -55,6 +63,12 @@ int main(void)
     arvore = montarArvore(&l);
     printf("\n\tArvore de huffman\n");
     imprimeArvore(arvore, 0);
+
+    // Montar o dicionario
+    colunas = alturaArvore(arvore) + 1;
+    dicionario = alocaDicionario(colunas);
+    gerarDicionario(dicionario, arvore, "", colunas);
+    imprimeDicionario(dicionario);
 
     return 0;
 }
@@ -201,6 +215,64 @@ void imprimeArvore(No *raiz, int tam)
     {
         imprimeArvore(raiz->esquerda, tam + 1);
         imprimeArvore(raiz->direita, tam + 1);
+    }
+}
+
+int alturaArvore(No *raiz)
+{
+    int esq, dir;
+    if (raiz == NULL)
+        return -1;
+    else
+    {
+        esq = alturaArvore(raiz->esquerda) + 1;
+        dir = alturaArvore(raiz->direita) + 1;
+        
+        if (esq > dir)
+            return esq;
+        else
+            return dir;
+    }
+}
+
+char** alocaDicionario(int colunas)
+{
+    char **dicionario;
+
+    dicionario = malloc(sizeof(char*) * TAM);
+    
+    for (int i = 0; i < TAM; i++)
+        dicionario[i] = calloc(colunas, sizeof(char));
+    
+    return dicionario;
+}
+
+void gerarDicionario(char **dicionario, No *raiz, char *caminho, int colunas)
+{
+    char esquerda[colunas], direita[colunas];
+
+    if (raiz->esquerda == NULL && raiz->direita == NULL)
+        strcpy(dicionario[raiz->letra], caminho);
+    else
+    {
+        strcpy(esquerda, caminho);
+        strcpy(direita, caminho);
+
+        strcat(esquerda, "0");
+        strcat(direita, "1");
+
+        gerarDicionario(dicionario, raiz->esquerda, esquerda, colunas);
+        gerarDicionario(dicionario, raiz->direita, direita, colunas);
+    }
+}
+
+void imprimeDicionario(char **dicionario)
+{
+    printf("\n\tDicionario:\n");
+    for (int i = 0; i < TAM; i++)
+    {
+        if (strlen(dicionario[i]) > 0)
+            printf("\t%3i: %s\n", i, dicionario[i]);
     }
 }
 
