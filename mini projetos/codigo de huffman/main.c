@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
+#include <windows.h>
 
 #define TAM 256
 
@@ -46,19 +46,32 @@ void compactar(unsigned char str[]);
 // Descompactar
 unsigned int ehBitUm(unsigned char byte, int i);
 void descompactar(No *raiz);
+int descobrirTamanho();
+void lerTexto(unsigned char *texto);
+void liberarDicionario(char **dicionario, int linhas);
+void liberarArvore(No *raiz);
 
 int main(void)
 {
-    setlocale(LC_ALL, "Portuguese");
     system("cls");
 
-    unsigned char texto[] = "Vamos aprender a programa";
+    //unsigned char texto[] = "Vamos aprender a programa";
+    unsigned char *texto;
     unsigned int tabelaFrequencia[TAM];
     Lista l;
     No *arvore;
-    int colunas;
+    int colunas, tam;
     char **dicionario;
     char *codificado, *decodificado;
+
+    tam = descobrirTamanho();
+    printf("Quantidade: %i", tam);
+
+    texto = calloc(tam + 2, sizeof(unsigned char));
+    lerTexto(texto);
+    printf("\nTEXTO:\n%s\n", texto);
+
+    SetConsoleOutputCP(65001);
 
     // Tabela de frequencia
     iniciaTabelaComZero(tabelaFrequencia);
@@ -90,7 +103,21 @@ int main(void)
     //printf("\n\tTexto codificado: %s\n\n", decodificado);
 
     // Compactar
+    compactar(codificado);
 
+    // Descompactar
+    printf("\nARQUIVO DESCOMPACTADO\n");
+    descompactar(arvore);
+    printf("\n\n");
+
+    // Liberando memoria
+    free(texto);
+    free(codificado);
+    free(decodificado);
+    liberarDicionario(dicionario, TAM);
+    liberarArvore(arvore);
+    
+    system("pause");
     return 0;
 }
 
@@ -420,3 +447,63 @@ void descompactar(No *raiz)
     fclose(arquivo);
 }
 
+int descobrirTamanho()
+{
+    FILE *arq = fopen("teste.txt", "r");
+    if (arq == NULL)
+    {
+        printf("Erro ao abrir o arquivo em descobrirTamanho\n");
+        return 1;
+    }
+
+    int tam = 0;
+    while (fgetc(arq) != -1)
+        tam++;
+
+    fclose(arq);
+    return tam;
+}
+
+void lerTexto(unsigned char *texto)
+{
+    FILE *arq = fopen("teste.txt", "r");
+    if (arq == NULL)
+    {
+        printf("Erro ao abrir o arquivo em lerTexto\n");
+        return;
+    }
+
+    char letra;
+    int i = 0;
+
+    while (!feof(arq))
+    {
+        letra = fgetc(arq);
+        if (letra != -1)
+        {
+            texto[i] = letra;
+            i++;
+        }
+    }
+
+    fclose(arq);
+}
+
+void liberarDicionario(char **dicionario, int linhas)
+{
+    for (int i = 0; i < linhas; i++) 
+    {
+        free(dicionario[i]);
+    }
+    free(dicionario);
+}
+
+void liberarArvore(No *raiz)
+{
+    if (raiz != NULL) 
+    {
+        liberarArvore(raiz->esquerda);
+        liberarArvore(raiz->direita);
+        free(raiz);
+    }
+}
