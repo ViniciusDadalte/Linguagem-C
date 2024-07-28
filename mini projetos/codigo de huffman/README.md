@@ -25,7 +25,7 @@ Este projeto implementa o algoritmo de compressão de Huffman em linguagem C. O 
 Use um compilador de C, como o `gcc`, para compilar o código:
 
 ```sh
-gcc -o huffman main.c
+gcc main.c -o huffman
 ```
 
 ### Executar
