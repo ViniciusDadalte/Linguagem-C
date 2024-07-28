@@ -41,6 +41,8 @@ int calculaTamanhoString(char **dicionario, unsigned char *texto);
 char* codificar(char **dicionario, unsigned char *texto);
 // Decodificar
 char* decodificar(unsigned char *texto, No *raiz);
+// Compactar
+void compactar(unsigned char str[]);
 
 int main(void)
 {
@@ -82,7 +84,9 @@ int main(void)
 
     // Decodificar
     decodificado = decodificar(codificado, arvore);
-    printf("\n\tTexto codificado: %s\n\n", decodificado);
+    //printf("\n\tTexto codificado: %s\n\n", decodificado);
+
+    // Compactar
 
     return 0;
 }
@@ -341,3 +345,37 @@ char* decodificar(unsigned char *texto, No *raiz)
     return decodificado;
 }
 
+void compactar(unsigned char str[])
+{
+    FILE *arquivo = fopen("compactado.bit", "wb");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo\n");
+        return;
+    }
+    
+    unsigned char mascara, byte = 0;
+    int i = 0, j = 7;
+    while (str[i] != '\0')
+    {
+        mascara = 1;
+        if (str[i] == '1')
+        {
+            mascara = mascara << j;
+            byte = byte | mascara;
+        }
+        j--;
+
+        if (j < 0)
+        {
+            fwrite(&byte, sizeof(unsigned char), 1, arquivo);
+            byte = 0;
+            j = 7;
+        }
+        i++;
+    }
+
+    if (j != 7)
+        fwrite(&byte, sizeof(unsigned char), 1, arquivo);
+    fclose(arquivo);
+}
