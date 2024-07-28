@@ -13,6 +13,7 @@ short maior(short a, short b);
 short alturaDoNo(No *n);
 short fatorDeBalanceamento(No *n);
 No* rotacaoEsquerda(No *r);
+No* rotacaoDireita(No *r);
 
 int main(void)
 {
@@ -67,6 +68,21 @@ No* rotacaoEsquerda(No *r)
 
     y->esquerdo = r;
     r->direito = f;
+
+    r->altura = maior(alturaDoNo(r->esquerdo), alturaDoNo(r->direito)) + 1;
+    y->altura = maior(alturaDoNo(y->esquerdo), alturaDoNo(y->direito)) + 1;
+
+    return y;
+}
+
+No* rotacaoDireita(No *r)
+{
+    No *y, *f;
+    y = r->esquerdo;
+    f = y->direito;
+
+    y->direito = r;
+    r->esquerdo = f;
 
     r->altura = maior(alturaDoNo(r->esquerdo), alturaDoNo(r->direito)) + 1;
     y->altura = maior(alturaDoNo(y->esquerdo), alturaDoNo(y->direito)) + 1;
