@@ -43,6 +43,9 @@ char* codificar(char **dicionario, unsigned char *texto);
 char* decodificar(unsigned char *texto, No *raiz);
 // Compactar
 void compactar(unsigned char str[]);
+// Descompactar
+unsigned int ehBitUm(unsigned char byte, int i);
+void descompactar(No *raiz);
 
 int main(void)
 {
@@ -379,3 +382,41 @@ void compactar(unsigned char str[])
         fwrite(&byte, sizeof(unsigned char), 1, arquivo);
     fclose(arquivo);
 }
+
+unsigned int ehBitUm(unsigned char byte, int i)
+{
+    unsigned char mascara = (1 << i);
+    return byte & mascara;
+}
+
+void descompactar(No *raiz)
+{
+    FILE *arquivo = fopen("compactado.bit", "rb");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo descompactar\n");
+        return;
+    }
+
+    No *aux = raiz;
+    unsigned char byte;
+    while (fread(&byte, sizeof(unsigned char), 1, arquivo))
+    {
+        for (int i = 7; i >= 0; i--)
+        {
+            if (ehBitUm(byte, i))
+                aux = aux->direita;
+            else
+                aux = aux->esquerda;
+
+            if (aux->esquerda == NULL && aux->direita == NULL)
+            {
+                printf("%c", aux->letra);
+                aux = raiz;
+            }
+        }
+    }
+
+    fclose(arquivo);
+}
+
