@@ -16,6 +16,8 @@ No* rotacaoEsquerda(No *r);
 No* rotacaoDireita(No *r);
 No* rotacaoDireitaEsquerda(No *r);
 No* rotacaoEsquerdaDireita(No *r);
+No* balancear(No *raiz);
+No* inserir(int x, No *raiz);
 
 int main(void)
 {
@@ -102,5 +104,40 @@ No* rotacaoEsquerdaDireita(No *r)
 {
     r->esquerdo = rotacaoEsquerda(r->esquerdo);
     return rotacaoDireita(r);
+}
+
+No* balancear(No *raiz)
+{
+    short fb = fatorDeBalanceamento(raiz);
+
+    if (fb < -1 && fatorDeBalanceamento(raiz->direito) <= 0)
+        raiz = rotacaoEsquerda(raiz);
+    else if (fb > 1 && fatorDeBalanceamento(raiz->esquerdo) >= 0)
+        raiz = rotacaoDireita(raiz);
+    else if (fb > 1 && fatorDeBalanceamento(raiz->esquerdo) < 0)
+        raiz = rotacaoEsquerdaDireita(raiz);
+    else if (fb < -1 && fatorDeBalanceamento(raiz->direito) > 0)
+        raiz = rotacaoDireitaEsquerda(raiz);
+
+    return raiz;
+}
+
+No* inserir(int x, No *raiz)
+{
+    if (raiz == NULL)
+        return novoNo(x);
+    else
+    {
+        if (x < raiz->valor)
+            raiz->esquerdo = inserir(x, raiz->esquerdo);
+        else if (x > raiz->valor)
+            raiz->direito = inserir(x, raiz->direito);
+        else
+            printf("\nInsericao nao realizada\nO elemento %i ja existe!\n", x);
+    }
+
+    raiz->altura = maior(alturaDoNo(raiz->esquerdo), alturaDoNo(raiz->direito)) + 1;
+    raiz = balancear(raiz);
+    return raiz;
 }
 
