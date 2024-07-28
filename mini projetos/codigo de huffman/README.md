@@ -84,4 +84,4 @@ Este código foi desenvolvido para fins educacionais e pode ser melhorado para m
 
 ## Licença
 
-Este projeto é licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto é licenciado sob a licença MIT. Veja o arquivo [LICENSE](../../LICENSE) para mais detalhes.
