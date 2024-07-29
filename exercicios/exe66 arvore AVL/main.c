@@ -19,13 +19,49 @@ No* rotacaoEsquerdaDireita(No *r);
 No* balancear(No *raiz);
 No* inserir(int x, No *raiz);
 No* remover(int num, No *raiz);
+void imprimirArvore(No *raiz, int nivel);
 
 int main(void)
 {
     system("cls");
 
+    int opcao, dado;
+    No *raiz = NULL;
 
+    do
+    {
+        printf("\n0 - sair\n1 - inserir\n2 - remover\n3 - imprimir\n\n");
+        scanf("%i", &opcao);
 
+        switch (opcao)
+        {
+        case 0:
+            system("cls");
+            printf("Saindo!!!\n\n");
+            break;
+        case 1:
+            printf("Digite o valor a ser inserido: ");
+            scanf("%i", &dado);
+            raiz = inserir(dado, raiz);
+            system("cls");
+            break;
+        case 2:
+            printf("Digite o valor a ser removido: ");
+            scanf("%i", &dado);
+            system("cls");
+            raiz = remover(dado, raiz);
+            break;
+        case 3:
+            system("cls");
+            imprimirArvore(raiz, 1);
+            break;        
+        default:
+            system("cls");
+            printf("Opcao invalida!!\n");
+            break;
+        }
+    } while (opcao != 0);
+    
     return 0;
 }
 
@@ -198,3 +234,19 @@ No* remover(int num, No *raiz)
         return raiz;
     }
 }
+
+void imprimirArvore(No *raiz, int nivel)
+{
+    if (raiz)
+    {
+        imprimirArvore(raiz->direito, nivel + 1);
+        printf("\n\n");
+
+        for (int i = 0; i < nivel; i++)
+            printf("\t");
+
+        printf("%i", raiz->valor);
+        imprimirArvore(raiz->esquerdo, nivel + 1);
+    }
+}
+
