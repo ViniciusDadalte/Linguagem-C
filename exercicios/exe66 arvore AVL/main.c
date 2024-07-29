@@ -141,3 +141,59 @@ No* inserir(int x, No *raiz)
     return raiz;
 }
 
+No* remover(int num, No *raiz)
+{
+    if (raiz == NULL)
+    {
+        printf("valor nao encontrado\n");
+        return NULL;
+    }
+    else
+    {
+        if (raiz->valor == num)
+        {
+            if (raiz->esquerdo == NULL && raiz->direito == NULL)
+            {
+                free(raiz);
+                printf("Elemento folha removido: %i", num);
+                return NULL;
+            }
+            else
+            {
+                if (raiz->esquerdo != NULL && raiz->direito != NULL)
+                {
+                    No *aux = raiz->esquerdo;
+                    while (aux->direito)
+                        aux = aux->direito;
+                    raiz->valor = aux->valor;
+                    aux->valor = num;
+                    printf("elemento trocado: %i\n", num);
+                    raiz->esquerdo = remover(num, raiz->esquerdo);
+                    return raiz;
+                }
+                else
+                {
+                    No *aux;
+                    if (raiz->esquerdo != NULL)
+                        aux = raiz->esquerdo;
+                    else
+                        aux = raiz->direito;
+                    free(raiz);
+                    printf("elemento com 1 filho removido: %i\n", num);
+                    return aux;
+                }
+            }
+        }
+        else
+        {
+            if (num < raiz->valor)
+                raiz->esquerdo = remover(num, raiz->esquerdo);
+            else
+                raiz->direito = remover(num, raiz->direito);
+        }
+
+        raiz->altura = maior(alturaDoNo(raiz->esquerdo), alturaDoNo(raiz->direito)) + 1;
+        raiz = balancear(raiz);
+        return raiz;
+    }
+}
