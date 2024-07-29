@@ -18,6 +18,7 @@ No* rotacaoDireitaEsquerda(No *r);
 No* rotacaoEsquerdaDireita(No *r);
 No* balancear(No *raiz);
 No* inserir(int x, No *raiz);
+No* remover(int num, No *raiz);
 
 int main(void)
 {
