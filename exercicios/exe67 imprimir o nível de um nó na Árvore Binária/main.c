@@ -1,0 +1,260 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct no
+{
+    int valor;
+    struct no *esquerda, *direita;
+} NoArv;
+
+void inserir(int num, NoArv **raiz);
+NoArv* buscar(int num, NoArv *raiz);
+NoArv* buscarVersaoDois(int num, NoArv *raiz, int nivel);
+int alutra(NoArv *raiz);
+int quantidadeDeNos(NoArv *raiz);
+int quantidadeDeFolhas(NoArv *raiz);
+NoArv* remover(int num, NoArv *raiz);
+void imprimirArvore(NoArv *raiz);
+void imprimirArvoreOrdenado(NoArv *raiz, int nivel);
+
+int main(void)
+{
+    system("cls");
+
+    NoArv *buscado, *raiz = NULL;
+    int opcao, dado;
+
+    do
+    {
+        printf("\n0 - sair\n1 - inserir\n2 - imprimirN\n3 - imprimirO\n4 - buscar\n5 - altura\n6 - tamanho\n7 - folhas\n8 - remover\n");
+        scanf("%i", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            printf("digite o dado: ");
+            scanf("%i", &dado);
+            inserir(dado, &raiz);
+            system("cls");
+            break;
+        case 2:
+            system("cls");
+            imprimirArvore(raiz);
+            break;
+        case 3:
+            system("cls");
+            imprimirArvoreOrdenado(raiz, 0);
+            break;
+        case 4:
+            printf("digite o dado a ser buscado: ");
+            scanf("%i", &dado);
+            system("cls");
+            buscado = buscarVersaoDois(dado, raiz, 0);
+            if (buscado)
+                printf("valor encontrado: %i\n", buscado->valor);
+            else
+                printf("valor nao encontrado!\n");
+            break;
+        case 5:
+            system("cls");
+            printf("Altura da arvore: %i\n", alutra(raiz));
+            break;
+        case 6:
+            system("cls");
+            printf("Tamanho: %i", quantidadeDeNos(raiz));
+            break;
+        case 7:
+            system("cls");
+            printf("Folhas: %i", quantidadeDeFolhas(raiz));
+            break;
+        case 8:
+            system("cls");
+            if (raiz == NULL)
+            {
+                printf("arvore esta vazia\n");
+            }
+            else
+            {
+                imprimirArvoreOrdenado(raiz, 0);
+                printf("\ndigite o dado que quer remover: ");
+                scanf("%i", &dado);
+                raiz = remover(dado, raiz);
+            }
+            break;
+        default:
+            if (opcao != 0)
+            {
+                system("cls");
+                printf("opcao invalido!\n");
+            }
+            break;
+        }
+    } while (opcao != 0);  
+
+    return 0;
+}
+
+void inserir(int num, NoArv **raiz)
+{
+    NoArv *aux = *raiz;
+    while (aux)
+    {
+        if (num < aux->valor)
+            raiz = &aux->esquerda;
+        else
+            raiz = &aux->direita;
+        aux = *raiz;
+    }
+    
+    aux = malloc(sizeof(NoArv));
+    if (aux == NULL)
+    {
+        printf("Erro ao alocar memoria\n");
+        return;
+    }
+    aux->valor = num;
+    aux->esquerda = NULL;
+    aux->direita = NULL;
+    *raiz = aux;
+}
+
+NoArv* buscar(int num, NoArv *raiz)
+{
+    while (raiz)
+    {
+        if (num < raiz->valor)
+            raiz = raiz->esquerda;
+        else if (num > raiz->valor)
+            raiz = raiz->direita;
+        else
+            return raiz;
+    }
+    return NULL;
+}
+
+NoArv* buscarVersaoDois(int num, NoArv *raiz, int nivel)
+{
+    if (raiz)
+    {
+        if (num == raiz->valor)
+        {
+            printf("\nNivel de %i: %i\n", num, nivel);
+            return raiz;
+        }
+        else if (num < raiz->valor)
+            return buscarVersaoDois(num, raiz->esquerda, nivel + 1);
+        else
+            return buscarVersaoDois(num, raiz->direita, nivel + 1);
+    }
+    return NULL;
+}
+
+int alutra(NoArv *raiz)
+{
+    if (raiz == NULL)
+    {
+        return -1;
+    }
+    else
+    {
+        int esq = alutra(raiz->esquerda);
+        int dir = alutra(raiz->direita);
+
+        if (esq > dir)
+            return esq + 1;
+        else
+            return dir + 1;
+    }
+}
+
+int quantidadeDeNos(NoArv *raiz)
+{
+    if (raiz == NULL)
+        return 0;
+    else
+        return 1 + quantidadeDeNos(raiz->esquerda) + quantidadeDeNos(raiz->direita);
+}
+
+int quantidadeDeFolhas(NoArv *raiz)
+{
+    if (raiz == NULL)
+        return 0;
+    else if (raiz->esquerda == NULL && raiz->direita == NULL)
+        return 1;
+    else
+        return quantidadeDeFolhas(raiz->esquerda) + quantidadeDeFolhas(raiz->direita);
+}
+
+NoArv* remover(int num, NoArv *raiz)
+{
+    if (raiz == NULL)
+    {
+        printf("valor nao encontrado\n");
+        return NULL;
+    }
+    else
+    {
+        if (raiz->valor == num)
+        {
+            if (raiz->esquerda == NULL && raiz->direita == NULL)
+            {
+                free(raiz);
+                return NULL;
+            }
+            else
+            {
+                if (raiz->esquerda != NULL && raiz->direita != NULL)
+                {
+                    NoArv *aux = raiz->esquerda;
+                    while (aux->direita)
+                        aux = aux->direita;
+                    raiz->valor = aux->valor;
+                    aux->valor = num;
+                    printf("elemento trocado: %i\n", num);
+                    raiz->esquerda = remover(num, raiz->esquerda);
+                    return raiz;
+                }
+                else
+                {
+                    NoArv *aux;
+                    if (raiz->esquerda != NULL)
+                        aux = raiz->esquerda;
+                    else
+                        aux = raiz->direita;
+                    free(raiz);
+                    printf("elemento com 1 filho removido: %i", num);
+                    return aux;
+                }
+            }
+        }
+        else
+        {
+            if (num < raiz->valor)
+                raiz->esquerda = remover(num, raiz->esquerda);
+            else
+                raiz->direita = remover(num, raiz->direita);
+            return raiz;
+        }
+    }
+}
+
+void imprimirArvore(NoArv *raiz)
+{
+    if (raiz)
+    {
+        printf("%i ", raiz->valor);
+        imprimirArvore(raiz->esquerda);
+        imprimirArvore(raiz->direita);
+    }
+}
+
+void imprimirArvoreOrdenado(NoArv *raiz, int nivel)
+{
+    if (raiz)
+    {
+        imprimirArvoreOrdenado(raiz->esquerda, nivel + 1);
+        printf("%i(%i) ", raiz->valor, nivel);
+        imprimirArvoreOrdenado(raiz->direita, nivel + 1);
+    }
+}
+
