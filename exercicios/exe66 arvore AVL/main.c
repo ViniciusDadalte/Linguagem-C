@@ -1,14 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+typedef struct 
+{
+    char nome[25];
+    int idade;
+    int cpf;
+} Pessoa;
 
 typedef struct no
 {
-    int valor;
+    Pessoa *p;
     struct no *esquerdo, *direito;
     short altura;
 } No;
 
-No* novoNo(int x);
+No* novoNo(Pessoa *x);
 short maior(short a, short b);
 short alturaDoNo(No *n);
 short fatorDeBalanceamento(No *n);
@@ -17,8 +25,9 @@ No* rotacaoDireita(No *r);
 No* rotacaoDireitaEsquerda(No *r);
 No* rotacaoEsquerdaDireita(No *r);
 No* balancear(No *raiz);
-No* inserir(int x, No *raiz);
-No* remover(int num, No *raiz);
+No* inserir(Pessoa *x, No *raiz);
+No* remover(int cpf, No *raiz);
+void imprimirPessoa(Pessoa *pes);
 void imprimirArvore(No *raiz, int nivel);
 
 int main(void)
@@ -27,6 +36,7 @@ int main(void)
 
     int opcao, dado;
     No *raiz = NULL;
+    Pessoa *p;
 
     do
     {
@@ -40,13 +50,16 @@ int main(void)
             printf("Saindo!!!\n\n");
             break;
         case 1:
-            printf("Digite o valor a ser inserido: ");
-            scanf("%i", &dado);
-            raiz = inserir(dado, raiz);
+            p = malloc(sizeof(Pessoa));
+            printf("Digite o nome: ");
+            scanf("%s", p->nome);
+            printf("Digite o cpf e a idade: ");
+            scanf("%i%i", &p->cpf, &p->idade);
+            raiz = inserir(p, raiz);
             system("cls");
             break;
         case 2:
-            printf("Digite o valor a ser removido: ");
+            printf("Digite o CPF a ser removido: ");
             scanf("%i", &dado);
             system("cls");
             raiz = remover(dado, raiz);
@@ -65,12 +78,12 @@ int main(void)
     return 0;
 }
 
-No* novoNo(int x)
+No* novoNo(Pessoa *x)
 {
     No *novo = malloc(sizeof(No));
     if (novo)
     {
-        novo->valor = x;
+        novo->p = x;
         novo->esquerdo = NULL;
         novo->direito = NULL;
         novo->altura = 0;
@@ -159,18 +172,18 @@ No* balancear(No *raiz)
     return raiz;
 }
 
-No* inserir(int x, No *raiz)
+No* inserir(Pessoa *x, No *raiz)
 {
     if (raiz == NULL)
         return novoNo(x);
     else
     {
-        if (x < raiz->valor)
+        if (x->cpf < raiz->p->cpf)
             raiz->esquerdo = inserir(x, raiz->esquerdo);
-        else if (x > raiz->valor)
+        else if (x->cpf > raiz->p->cpf)
             raiz->direito = inserir(x, raiz->direito);
         else
-            printf("\nInsericao nao realizada\nO elemento %i ja existe!\n", x);
+            printf("\nInsericao nao realizada\nO elemento %i ja existe!\n", x->cpf);
     }
 
     raiz->altura = maior(alturaDoNo(raiz->esquerdo), alturaDoNo(raiz->direito)) + 1;
@@ -178,7 +191,7 @@ No* inserir(int x, No *raiz)
     return raiz;
 }
 
-No* remover(int num, No *raiz)
+No* remover(int cpf, No *raiz)
 {
     if (raiz == NULL)
     {
@@ -187,12 +200,12 @@ No* remover(int num, No *raiz)
     }
     else
     {
-        if (raiz->valor == num)
+        if (raiz->p->cpf == cpf)
         {
             if (raiz->esquerdo == NULL && raiz->direito == NULL)
             {
                 free(raiz);
-                printf("Elemento folha removido: %i", num);
+                printf("Elemento folha removido: %i", cpf);
                 return NULL;
             }
             else
@@ -202,10 +215,15 @@ No* remover(int num, No *raiz)
                     No *aux = raiz->esquerdo;
                     while (aux->direito)
                         aux = aux->direito;
-                    raiz->valor = aux->valor;
-                    aux->valor = num;
-                    printf("elemento trocado: %i\n", num);
-                    raiz->esquerdo = remover(num, raiz->esquerdo);
+                    
+                    Pessoa *pessoaAux;
+                    pessoaAux = raiz->p;
+
+                    raiz->p = aux->p;
+                    aux->p = pessoaAux;
+                    
+                    printf("elemento trocado: %i\n", cpf);
+                    raiz->esquerdo = remover(cpf, raiz->esquerdo);
                     return raiz;
                 }
                 else
@@ -216,23 +234,30 @@ No* remover(int num, No *raiz)
                     else
                         aux = raiz->direito;
                     free(raiz);
-                    printf("elemento com 1 filho removido: %i\n", num);
+                    printf("elemento com 1 filho removido: %i\n", cpf);
                     return aux;
                 }
             }
         }
         else
         {
-            if (num < raiz->valor)
-                raiz->esquerdo = remover(num, raiz->esquerdo);
+            if (cpf < raiz->p->cpf)
+                raiz->esquerdo = remover(cpf, raiz->esquerdo);
             else
-                raiz->direito = remover(num, raiz->direito);
+                raiz->direito = remover(cpf, raiz->direito);
         }
 
         raiz->altura = maior(alturaDoNo(raiz->esquerdo), alturaDoNo(raiz->direito)) + 1;
         raiz = balancear(raiz);
         return raiz;
     }
+}
+
+void imprimirPessoa(Pessoa *pes)
+{
+    printf("Nome: %s ", pes->nome);
+    printf("CPF: %i ", pes->cpf);
+    printf("Idade: %i\n", pes->idade);
 }
 
 void imprimirArvore(No *raiz, int nivel)
@@ -245,7 +270,7 @@ void imprimirArvore(No *raiz, int nivel)
         for (int i = 0; i < nivel; i++)
             printf("\t");
 
-        printf("%i", raiz->valor);
+        imprimirPessoa(raiz->p);
         imprimirArvore(raiz->esquerdo, nivel + 1);
     }
 }
