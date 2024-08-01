@@ -3,6 +3,7 @@
 
 void printArray(int arr[], int max);
 void bubbleSort(int arr[], int max);
+void insertionSort(int arr[], int max);
 
 int main(void)
 {
@@ -14,8 +15,9 @@ int main(void)
     printf("Before: ");
     printArray(array, size);
 
-    bubbleSort(array, size);
-    
+    //bubbleSort(array, size);
+    insertionSort(array, size);
+
     printf("After: ");
     printArray(array, size);
 
@@ -51,6 +53,24 @@ void bubbleSort(int arr[], int max)
 
         if (flag == 0)
             break;
+    }
+}
+
+void insertionSort(int arr[], int max)
+{
+    int temp, index;
+    
+    for (int i = 1; i < max; i++)
+    {
+        temp = arr[i];
+        index = i;
+
+        while (index > 0 && arr[index - 1] > temp)
+        {
+            arr[index] = arr[index - 1];
+            index--;
+        }
+        arr[index] = temp;
     }
 }
 
