@@ -2,8 +2,10 @@
 #include <stdlib.h>
 
 void printArray(int arr[], int max);
+void swap(int *a, int *b);
 void bubbleSort(int arr[], int max);
 void insertionSort(int arr[], int max);
+void selectionSort(int arr[], int max);
 
 int main(void)
 {
@@ -16,7 +18,8 @@ int main(void)
     printArray(array, size);
 
     //bubbleSort(array, size);
-    insertionSort(array, size);
+    //insertionSort(array, size);
+    selectionSort(array, size);
 
     printf("After: ");
     printArray(array, size);
@@ -31,6 +34,13 @@ void printArray(int arr[], int max)
         printf("%i ", arr[i]);
     }
     printf("\n");
+}
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 void bubbleSort(int arr[], int max)
@@ -71,6 +81,26 @@ void insertionSort(int arr[], int max)
             index--;
         }
         arr[index] = temp;
+    }
+}
+
+void selectionSort(int arr[], int max)
+{
+    for (int i = 0; i < max - 1; i++)
+    {
+        int min = i;
+        for (int j = i + 1; j < max; j++)
+        {
+           if (arr[min] > arr[j]) 
+           {
+               min = j;
+           }
+        }
+
+        if (min != i)
+        {
+            swap(&arr[i], &arr[min]);
+        }
     }
 }
 
