@@ -6,6 +6,8 @@ void swap(int *a, int *b);
 void bubbleSort(int arr[], int max);
 void insertionSort(int arr[], int max);
 void selectionSort(int arr[], int max);
+int partition(int arr[], int start, int end);
+void quickSort(int arr[], int start, int end);
 
 int main(void)
 {
@@ -19,7 +21,8 @@ int main(void)
 
     //bubbleSort(array, size);
     //insertionSort(array, size);
-    selectionSort(array, size);
+    //selectionSort(array, size);
+    quickSort(array, 0, size - 1);
 
     printf("After: ");
     printArray(array, size);
@@ -102,5 +105,34 @@ void selectionSort(int arr[], int max)
             swap(&arr[i], &arr[min]);
         }
     }
+}
+
+int partition(int arr[], int start, int end)
+{
+    int pivot = arr[end];
+    int i = start - 1;
+
+    for (int j = start; j <= end - 1; j++)
+    {
+        if (arr[j] < pivot)
+        {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    i++;
+    swap(&arr[i], &arr[end]);
+
+    return i;
+}
+
+void quickSort(int arr[], int start, int end)
+{
+    if (end <= start) return; // Base case
+
+    int pivot = partition(arr, start, end);
+    quickSort(arr, start, pivot - 1);
+    quickSort(arr, pivot + 1, end);
+
 }
 
