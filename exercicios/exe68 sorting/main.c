@@ -35,7 +35,7 @@ int main(void)
 
 void printArray(int arr[], int max)
 {
-    for (int i = 0; i <= max - 1; i++)
+    for (int i = 0; i < max; i++)
     {
         printf("%i ", arr[i]);
     }
@@ -181,8 +181,13 @@ void mergeSort(int arr[], int max)
     int leftSize = middle;
     int rightSize = max - middle;
 
-    int *leftArray = malloc(leftSize * sizeof(int));;
+    int *leftArray = malloc(leftSize * sizeof(int));
     int *rightArray = malloc(rightSize * sizeof(int));
+    if(leftArray == NULL || rightArray == NULL)
+    {
+        printf("Erro ao alocar memoria\n");
+        return;
+    }
     
     int j = 0; // Right array
     for (int i = 0; i < max; i++) // Left array
