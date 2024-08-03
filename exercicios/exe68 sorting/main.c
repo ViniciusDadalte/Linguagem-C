@@ -8,6 +8,8 @@ void insertionSort(int arr[], int max);
 void selectionSort(int arr[], int max);
 int partition(int arr[], int start, int end);
 void quickSort(int arr[], int start, int end);
+void merge(int leftArray[], int leftSize, int rightArray[], int rightSize, int arr[]);
+void mergeSort(int arr[], int max);
 
 int main(void)
 {
@@ -22,7 +24,8 @@ int main(void)
     //bubbleSort(array, size);
     //insertionSort(array, size);
     //selectionSort(array, size);
-    quickSort(array, 0, size - 1);
+    //quickSort(array, 0, size - 1);
+    mergeSort(array, size);
 
     printf("After: ");
     printArray(array, size);
@@ -134,5 +137,73 @@ void quickSort(int arr[], int start, int end)
     quickSort(arr, start, pivot - 1);
     quickSort(arr, pivot + 1, end);
 
+}
+
+void merge(int leftArray[], int leftSize, int rightArray[], int rightSize, int arr[])
+{
+    int i = 0, l = 0, r = 0; // Indices
+
+    while (l < leftSize && r < rightSize)
+    {
+        if (leftArray[l] < rightArray[r])
+        {
+            arr[i] = leftArray[l];
+            i++;
+            l++;
+        }
+        else
+        {
+            arr[i] = rightArray[r];
+            i++;
+            r++;
+        }
+    }
+    while (l < leftSize)
+    {
+        arr[i] = leftArray[l];
+        i++;
+        l++;
+    }
+    while (r < rightSize)
+    {
+        arr[i] = rightArray[r];
+        i++;
+        r++;
+    }
+}
+
+void mergeSort(int arr[], int max)
+{
+    if (max <= 1) return; // Base case
+
+    int middle = max / 2;
+
+    int leftSize = middle;
+    int rightSize = max - middle;
+
+    int *leftArray = malloc(leftSize * sizeof(int));;
+    int *rightArray = malloc(rightSize * sizeof(int));
+    
+    int j = 0; // Right array
+    for (int i = 0; i < max; i++) // Left array
+    {
+        if (i < middle)
+        {
+            leftArray[i] = arr[i];
+        }
+        else
+        {
+            rightArray[j] = arr[i];
+            j++;
+        }
+    }
+
+    mergeSort(leftArray, leftSize);
+    mergeSort(rightArray, rightSize);
+
+    merge(leftArray, leftSize, rightArray, rightSize, arr);
+
+    free(leftArray);
+    free(rightArray);
 }
 
